@@ -1,0 +1,13 @@
+# Dependencies & build output
+node_modules/
+target/
+.vscode/
+
+# Ignore downloaded audio files, keep folder structure
+downloaded_music/*
+!downloaded_music/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
+

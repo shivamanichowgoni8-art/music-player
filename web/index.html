@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Music - Desktop Player</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <span class="brand-title">Music</span>
+      </div>
+
+      <nav class="nav-sections">
+        <div class="nav-group">
+          <div class="nav-group-title">LIBRARY</div>
+          <button class="nav-item active" data-view="songs" id="nav-songs">
+            <span class="nav-icon">♫</span>
+            <span>Songs</span>
+            <span class="badge" id="library-count">0</span>
+          </button>
+          <button class="nav-item" data-view="albums" id="nav-albums">
+            <span class="nav-icon">▤</span>
+            <span>Albums</span>
+          </button>
+          <button class="nav-item" data-view="artists" id="nav-artists">
+            <span class="nav-icon">👤</span>
+            <span>Artists</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-title">PLAYLISTS</div>
+          <button class="nav-item" data-view="recent" id="nav-recent">
+            <span class="nav-icon">🕒</span>
+            <span>Recently Added</span>
+          </button>
+          <button class="nav-item" data-view="favorites" id="nav-favorites">
+            <span class="nav-icon">♥</span>
+            <span>Favorites</span>
+            <span class="badge" id="favorites-count">0</span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-title">DOWNLOADS & STORE</div>
+          <button class="nav-item" data-view="download" id="nav-download">
+            <span class="nav-icon">⤓</span>
+            <span>Download Music</span>
+          </button>
+          <button class="nav-item" data-view="queue" id="nav-queue">
+            <span class="nav-icon">☰</span>
+            <span>Up Next Queue</span>
+            <span class="badge" id="queue-badge">0</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <label for="folder-input" class="btn-import-folder" id="btn-import-folder">
+          <span class="import-icon">📁</span>
+          <span>Open Music Folder</span>
+        </label>
+        <input type="file" id="folder-input" webkitdirectory directory multiple accept="audio/*" style="display: none;">
+        <label for="file-input" class="btn-import-files" id="btn-import-files">
+          <span>+ Add Audio Files</span>
+        </label>
+        <input type="file" id="file-input" multiple accept="audio/*" style="display: none;">
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      
+      <!-- TOP NAVIGATION BAR -->
+      <header class="top-bar">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Search songs, artists, albums..." autocomplete="off">
+          <button id="clear-search" class="clear-search-btn" style="display: none;">✕</button>
+        </div>
+
+        <div class="top-bar-actions">
+          <div class="view-toggles">
+            <button class="view-btn active" id="btn-list-view" title="List View">☰</button>
+            <button class="view-btn" id="btn-grid-view" title="Grid View">⊞</button>
+          </div>
+          <button class="btn-primary" id="btn-play-all">
+            <span class="play-icon">▶</span> Play All
+          </button>
+          <button class="btn-secondary" id="btn-shuffle-all">
+            <span>⇄</span> Shuffle
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW CONTAINER -->
+      <div class="content-scroll" id="content-scroll">
+        
+        <!-- 1. LIBRARY VIEW -->
+        <section class="view-panel active" id="view-library">
+          <div class="library-header">
+            <div class="header-info">
+              <h1 class="page-title" id="page-title">Songs</h1>
+              <p class="page-stats" id="page-stats">Loading music library...</p>
+            </div>
+          </div>
+
+          <!-- LIST VIEW TABLE -->
+          <div class="track-table-container" id="list-view-container">
+            <table class="track-table">
+              <thead>
+                <tr>
+                  <th class="col-num">#</th>
+                  <th class="col-art"></th>
+                  <th class="col-title">TITLE</th>
+                  <th class="col-artist">ARTIST</th>
+                  <th class="col-album">ALBUM</th>
+                  <th class="col-fav"></th>
+                  <th class="col-duration">TIME</th>
+                  <th class="col-actions"></th>
+                </tr>
+              </thead>
+              <tbody id="track-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- GRID VIEW CONTAINER -->
+          <div class="track-grid-container" id="grid-view-container" style="display: none;">
+            <div class="track-grid" id="track-grid">
+              <!-- Dynamically populated cards -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. DOWNLOAD VIEW -->
+        <section class="view-panel" id="view-download" style="display: none;">
+          <div class="download-header">
+            <h1 class="page-title">Y2Music & Audio Downloader</h1>
+            <p class="page-stats">Download any song directly to your device storage using YouTube, YouTube Music, or direct links.</p>
+          </div>
+
+          <!-- Y2MUSIC DOWNLOAD CARD -->
+          <div class="card download-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h3 class="card-title" style="margin-bottom:0;">Download via Y2Music Engine (YouTube / Soundcloud / MP3)</h3>
+              <span style="background:rgba(255,45,85,0.15); color:var(--accent-pink); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px; border:1px solid rgba(255,45,85,0.3);">⚡ Y2Music Powered</span>
+            </div>
+            <p class="card-desc">Paste any YouTube URL (e.g. <code>https://www.youtube.com/watch?v=...</code>), or song title, to extract high-quality MP3 directly into your library.</p>
+            <div class="url-input-form">
+              <input type="text" id="dl-url-input" placeholder="Paste YouTube link or enter song name (e.g. Alan Walker - Faded)" class="input-field">
+              <input type="text" id="dl-title-input" placeholder="Custom Title (optional)" class="input-field">
+              <input type="text" id="dl-artist-input" placeholder="Artist (optional)" class="input-field">
+              <button class="btn-accent" id="btn-download-url">
+                <span>⤓</span> Download MP3
+              </button>
+            </div>
+            <div class="download-progress-bar-container" id="dl-progress-box" style="display: none;">
+              <div class="progress-info">
+                <span id="dl-status-text">Downloading track...</span>
+                <span id="dl-percent-text">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="dl-progress-fill"></div>
+              </div>
+              <div class="dl-actions-row" id="dl-actions-row" style="display: none; margin-top: 12px; gap: 10px;">
+                <button class="btn-primary" id="btn-dl-play-now">▶ Play Now</button>
+                <button class="btn-secondary" id="btn-dl-go-library">Go to Library</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOWNLOADED ON DEVICE SECTION -->
+          <div class="catalog-section" id="device-downloads-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <h2 class="section-title" style="margin-bottom: 0;">Downloaded Songs on Your Device (<span id="device-downloads-count">0</span>)</h2>
+              <button class="btn-secondary" id="btn-refresh-device-downloads" style="font-size: 0.78rem; padding: 4px 12px;">↻ Refresh</button>
+            </div>
+            <div class="device-downloads-list" id="device-downloads-list">
+              <!-- Dynamically populated downloaded tracks -->
+            </div>
+          </div>
+
+          <!-- CURATED DOWNLOAD CATALOG -->
+          <div class="catalog-section">
+            <h2 class="section-title">Curated Royalty-Free Catalog (1-Click Download)</h2>
+            <div class="catalog-grid" id="catalog-grid">
+              <!-- Dynamically populated curated downloadable tracks -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- RIGHT QUEUE SIDEBAR (Up Next) -->
+    <aside class="queue-drawer" id="queue-drawer">
+      <div class="queue-header">
+        <div>
+          <h3 class="queue-title">Up Next</h3>
+          <span class="queue-count" id="drawer-queue-count">0 tracks</span>
+        </div>
+        <div class="queue-actions">
+          <button class="btn-text" id="btn-clear-queue">Clear</button>
+          <button class="btn-close-queue" id="btn-close-queue">✕</button>
+        </div>
+      </div>
+      <div class="queue-list" id="queue-list">
+        <!-- Up next track cards -->
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- PERSISTENT BOTTOM PLAYBACK BAR -->
+  <footer class="playback-bar" id="playback-bar">
+    
+    <!-- LEFT: Current Track Info -->
+    <div class="bar-track-info">
+      <div class="bar-artwork-wrapper">
+        <canvas id="bar-artwork" width="52" height="52" class="bar-artwork"></canvas>
+        <div class="now-playing-bars" id="soundwave-anim">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="bar-details">
+        <div class="bar-title" id="bar-title">Not Playing</div>
+        <div class="bar-artist" id="bar-artist">Select a song to start</div>
+      </div>
+      <button class="bar-fav-btn" id="bar-btn-favorite" title="Favorite">♡</button>
+    </div>
+
+    <!-- CENTER: Transport Controls & Seekbar -->
+    <div class="bar-controls">
+      <div class="transport-buttons">
+        <button class="control-btn" id="btn-shuffle" title="Shuffle (S)">⇄</button>
+        <button class="control-btn" id="btn-prev" title="Previous (Left Arrow)">⏮</button>
+        <button class="control-btn play-btn" id="btn-play-pause" title="Play/Pause (Space)">▶</button>
+        <button class="control-btn" id="btn-next" title="Next (Right Arrow)">⏭</button>
+        <button class="control-btn" id="btn-repeat" title="Repeat (R)">🔁</button>
+      </div>
+
+      <div class="seek-container">
+        <span class="time-label" id="current-time">0:00</span>
+        <div class="slider-wrapper">
+          <input type="range" id="seek-slider" min="0" max="100" value="0" step="0.1" class="apple-slider">
+        </div>
+        <span class="time-label" id="total-time">0:00</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Volume & Queue Toggles -->
+    <div class="bar-utilities">
+      <button class="control-btn queue-toggle-btn" id="btn-toggle-queue" title="Toggle Queue">☰</button>
+      <button class="control-btn mute-btn" id="btn-mute" title="Mute/Unmute">🔊</button>
+      <div class="volume-slider-wrapper">
+        <input type="range" id="volume-slider" min="0" max="100" value="85" class="apple-slider">
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Hidden HTML5 Audio Element for playback -->
+  <audio id="audio-engine" preload="auto"></audio>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

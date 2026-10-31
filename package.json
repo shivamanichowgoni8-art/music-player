@@ -1,0 +1,20 @@
+{
+  "name": "apple-music-player",
+  "version": "1.0.0",
+  "description": "Apple Music Desktop & Web Player",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "music-player",
+    "apple-music",
+    "web-audio"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
+
